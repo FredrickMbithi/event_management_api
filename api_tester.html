@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management API - Testing Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .endpoint {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .endpoint:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .endpoint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .endpoint-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .method {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .method.GET { background: #48bb78; color: white; }
+        .method.POST { background: #4299e1; color: white; }
+        .method.PUT { background: #ed8936; color: white; }
+        .method.DELETE { background: #f56565; color: white; }
+        
+        .endpoint-desc {
+            color: #718096;
+            margin-bottom: 15px;
+        }
+        
+        .url {
+            background: #2d3748;
+            color: #68d391;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #718096;
+        }
+        
+        .btn-secondary:hover {
+            background: #4a5568;
+        }
+        
+        .auth-required {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .public {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .test-form {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .test-form input,
+        .test-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        
+        .test-form textarea {
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .response {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .token-display {
+            background: #fffaf0;
+            border: 2px solid #fbd38d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .token-display strong {
+            color: #744210;
+        }
+        
+        .token-value {
+            background: #2d3748;
+            color: #68d391;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Event Management API</h1>
+            <p>Interactive Testing Interface</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Server: <strong>http://localhost:8001</strong></p>
+        </header>
+        
+        <div class="content">
+            <!-- Browser Accessible -->
+            <div class="section">
+                <h2>🌐 Browser-Accessible Endpoints</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">List All Events</span>
+                            <span class="public">PUBLIC</span>
+                        </div>
+                        <span class="method GET">GET</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        View all events in JSON format. No authentication required.
+                    </div>
+                    <div class="url">http://localhost:8001/events/</div>
+                    <a href="http://localhost:8001/events/" target="_blank" class="btn">
+                        Open in Browser →
+                    </a>
+                    <button class="btn btn-secondary" onclick="testEndpoint('GET', '/events/', null)">
+                        Test with Fetch API
+                    </button>
+                    <div id="response-events" class="response"></div>
+                </div>
+            </div>
+            
+            <!-- User Endpoints -->
+            <div class="section">
+                <h2>👤 User Endpoints</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">Register User</span>
+                            <span class="public">PUBLIC</span>
+                        </div>
+                        <span class="method POST">POST</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        Create a new user account. Returns user object and JWT tokens.
+                    </div>
+                    <div class="url">http://localhost:8001/users/register/</div>
+                    
+                    <div class="test-form">
+                        <input type="text" id="reg-name" placeholder="Name" value="John Doe">
+                        <input type="email" id="reg-email" placeholder="Email" value="john@example.com">
+                        <input type="password" id="reg-password" placeholder="Password (min 6 chars)" value="password123">
+                        <button class="btn" onclick="registerUser()">Register User</button>
+                    </div>
+                    <div id="response-register" class="response"></div>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">Login User</span>
+                            <span class="public">PUBLIC</span>
+                        </div>
+                        <span class="method POST">POST</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        Authenticate and receive JWT tokens.
+                    </div>
+                    <div class="url">http://localhost:8001/users/login/</div>
+                    
+                    <div class="test-form">
+                        <input type="email" id="login-email" placeholder="Email" value="john@example.com">
+                        <input type="password" id="login-password" placeholder="Password" value="password123">
+                        <button class="btn" onclick="loginUser()">Login</button>
+                    </div>
+                    <div id="response-login" class="response"></div>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">Refresh Token</span>
+                            <span class="public">PUBLIC</span>
+                        </div>
+                        <span class="method POST">POST</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        Get a new access token using your refresh token.
+                    </div>
+                    <div class="url">http://localhost:8001/token/refresh/</div>
+                    
+                    <div class="test-form">
+                        <input type="text" id="refresh-token" placeholder="Refresh Token">
+                        <button class="btn" onclick="refreshToken()">Refresh Token</button>
+                    </div>
+                    <div id="response-refresh" class="response"></div>
+                </div>
+            </div>
+            
+            <!-- Event Endpoints -->
+            <div class="section">
+                <h2>📅 Event Endpoints</h2>
+                
+                <div class="token-display">
+                    <strong>Current Access Token:</strong>
+                    <div class="token-value" id="current-token">No token yet. Login or register first.</div>
+                    <button class="btn" onclick="clearToken()" style="margin-top: 10px;">Clear Token</button>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">Create Event</span>
+                            <span class="auth-required">🔒 AUTH REQUIRED</span>
+                        </div>
+                        <span class="method POST">POST</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        Create a new event. You must be authenticated. Organizer is set automatically.
+                    </div>
+                    <div class="url">http://localhost:8001/events/</div>
+                    
+                    <div class="test-form">
+                        <input type="text" id="event-title" placeholder="Event Title" value="Tech Meetup">
+                        <textarea id="event-desc" placeholder="Description">Join us for an exciting tech meetup!</textarea>
+                        <input type="text" id="event-location" placeholder="Location" value="iHub, Nairobi">
+                        <input type="datetime-local" id="event-date" value="2026-12-31T14:00">
+                        <input type="number" id="event-capacity" placeholder="Max Attendees (optional)" value="50">
+                        <button class="btn" onclick="createEvent()">Create Event</button>
+                    </div>
+                    <div id="response-create-event" class="response"></div>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">Update Event</span>
+                            <span class="auth-required">🔒 ORGANIZER ONLY</span>
+                        </div>
+                        <span class="method PUT">PUT</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        Update an event. Only the organizer can modify it.
+                    </div>
+                    <div class="url">http://localhost:8001/events/{id}/</div>
+                    
+                    <div class="test-form">
+                        <input type="number" id="update-event-id" placeholder="Event ID" value="1">
+                        <input type="text" id="update-title" placeholder="Event Title" value="Tech Meetup - UPDATED">
+                        <textarea id="update-desc" placeholder="Description">Updated description</textarea>
+                        <input type="text" id="update-location" placeholder="Location" value="iHub, Nairobi">
+                        <input type="datetime-local" id="update-date" value="2026-12-31T14:00">
+                        <input type="number" id="update-capacity" placeholder="Max Attendees" value="100">
+                        <button class="btn" onclick="updateEvent()">Update Event</button>
+                    </div>
+                    <div id="response-update-event" class="response"></div>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">Register for Event</span>
+                            <span class="auth-required">🔒 AUTH REQUIRED</span>
+                        </div>
+                        <span class="method POST">POST</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        Register the authenticated user for an event.
+                    </div>
+                    <div class="url">http://localhost:8001/events/{id}/register/</div>
+                    
+                    <div class="test-form">
+                        <input type="number" id="register-event-id" placeholder="Event ID" value="1">
+                        <button class="btn" onclick="registerForEvent()">Register for Event</button>
+                    </div>
+                    <div id="response-register-event" class="response"></div>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div>
+                            <span class="endpoint-title">Delete Event</span>
+                            <span class="auth-required">🔒 ORGANIZER ONLY</span>
+                        </div>
+                        <span class="method DELETE">DELETE</span>
+                    </div>
+                    <div class="endpoint-desc">
+                        Delete an event. Only the organizer can delete it.
+                    </div>
+                    <div class="url">http://localhost:8001/events/{id}/</div>
+                    
+                    <div class="test-form">
+                        <input type="number" id="delete-event-id" placeholder="Event ID" value="1">
+                        <button class="btn" onclick="deleteEvent()">Delete Event</button>
+                    </div>
+                    <div id="response-delete-event" class="response"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const BASE_URL = 'http://localhost:8001';
+        let accessToken = null;
+        
+        function displayResponse(elementId, data, status) {
+            const el = document.getElementById(elementId);
+            el.style.display = 'block';
+            el.textContent = `Status: ${status}\n\n${JSON.stringify(data, null, 2)}`;
+        }
+        
+        function saveToken(token) {
+            accessToken = token;
+            document.getElementById('current-token').textContent = token;
+        }
+        
+        function clearToken() {
+            accessToken = null;
+            document.getElementById('current-token').textContent = 'No token yet. Login or register first.';
+        }
+        
+        async function testEndpoint(method, path, body) {
+            try {
+                const response = await fetch(BASE_URL + path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: body ? JSON.stringify(body) : null
+                });
+                const data = await response.json();
+                displayResponse('response-events', data, response.status);
+            } catch (error) {
+                displayResponse('response-events', { error: error.message }, 'Error');
+            }
+        }
+        
+        async function registerUser() {
+            const body = {
+                name: document.getElementById('reg-name').value,
+                email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value
+            };
+            
+            try {
+                const response = await fetch(BASE_URL + '/users/register/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.tokens) {
+                    saveToken(data.tokens.access);
+                }
+                
+                displayResponse('response-register', data, response.status);
+            } catch (error) {
+                displayResponse('response-register', { error: error.message }, 'Error');
+            }
+        }
+        
+        async function loginUser() {
+            const body = {
+                email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value
+            };
+            
+            try {
+                const response = await fetch(BASE_URL + '/users/login/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.tokens) {
+                    saveToken(data.tokens.access);
+                }
+                
+                displayResponse('response-login', data, response.status);
+            } catch (error) {
+                displayResponse('response-login', { error: error.message }, 'Error');
+            }
+        }
+        
+        async function refreshToken() {
+            const body = {
+                refresh: document.getElementById('refresh-token').value
+            };
+            
+            try {
+                const response = await fetch(BASE_URL + '/token/refresh/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.access) {
+                    saveToken(data.access);
+                }
+                
+                displayResponse('response-refresh', data, response.status);
+            } catch (error) {
+                displayResponse('response-refresh', { error: error.message }, 'Error');
+            }
+        }
+        
+        async function createEvent() {
+            if (!accessToken) {
+                alert('Please login or register first to get an access token!');
+                return;
+            }
+            
+            const dateInput = document.getElementById('event-date').value;
+            const body = {
+                title: document.getElementById('event-title').value,
+                description: document.getElementById('event-desc').value,
+                location: document.getElementById('event-location').value,
+                date: new Date(dateInput).toISOString(),
+                max_attendees: parseInt(document.getElementById('event-capacity').value) || null
+            };
+            
+            try {
+                const response = await fetch(BASE_URL + '/events/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                displayResponse('response-create-event', data, response.status);
+            } catch (error) {
+                displayResponse('response-create-event', { error: error.message }, 'Error');
+            }
+        }
+        
+        async function updateEvent() {
+            if (!accessToken) {
+                alert('Please login or register first to get an access token!');
+                return;
+            }
+            
+            const eventId = document.getElementById('update-event-id').value;
+            const dateInput = document.getElementById('update-date').value;
+            const body = {
+                title: document.getElementById('update-title').value,
+                description: document.getElementById('update-desc').value,
+                location: document.getElementById('update-location').value,
+                date: new Date(dateInput).toISOString(),
+                max_attendees: parseInt(document.getElementById('update-capacity').value) || null
+            };
+            
+            try {
+                const response = await fetch(BASE_URL + `/events/${eventId}/`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                displayResponse('response-update-event', data, response.status);
+            } catch (error) {
+                displayResponse('response-update-event', { error: error.message }, 'Error');
+            }
+        }
+        
+        async function registerForEvent() {
+            if (!accessToken) {
+                alert('Please login or register first to get an access token!');
+                return;
+            }
+            
+            const eventId = document.getElementById('register-event-id').value;
+            
+            try {
+                const response = await fetch(BASE_URL + `/events/${eventId}/register/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                const data = await response.json();
+                displayResponse('response-register-event', data, response.status);
+            } catch (error) {
+                displayResponse('response-register-event', { error: error.message }, 'Error');
+            }
+        }
+        
+        async function deleteEvent() {
+            if (!accessToken) {
+                alert('Please login or register first to get an access token!');
+                return;
+            }
+            
+            const eventId = document.getElementById('delete-event-id').value;
+            
+            if (!confirm(`Are you sure you want to delete event ${eventId}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(BASE_URL + `/events/${eventId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                const data = await response.json();
+                displayResponse('response-delete-event', data, response.status);
+            } catch (error) {
+                displayResponse('response-delete-event', { error: error.message }, 'Error');
+            }
+        }
+    </script>
+</body>
+</html>
