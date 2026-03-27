@@ -55,7 +55,7 @@ event_management_api/
 
 ```bash
 # 1. Clone and enter project
-git clone <your-repo-url>
+git clone https://github.com/FredrickMbithi/event_management_api
 cd event_management_api
 
 # 2. Create virtual environment
